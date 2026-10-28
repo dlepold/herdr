@@ -1061,6 +1061,12 @@
           ]
         },
         {
+          "key": "ui.sidebar.agents.show_count",
+          "type": "boolean",
+          "default": "true",
+          "description": "Show the live number of listed agents in the panel heading, including the active agent-view filter and combined machine list."
+        },
+        {
           "key": "ui.sidebar.agents.row_gap",
           "type": "integer",
           "default": "0",
@@ -1077,6 +1083,12 @@
           "type": "table of token rows",
           "default": "{}",
           "description": "Complete Agent-row overrides keyed by strict canonical agent id. Agents without an override use ui.sidebar.agents.rows."
+        },
+        {
+          "key": "ui.sidebar.spaces.show_count",
+          "type": "boolean",
+          "default": "true",
+          "description": "Show the live number of spaces in the panel heading, including collapsed group members."
         },
         {
           "key": "ui.sidebar.spaces.row_gap",

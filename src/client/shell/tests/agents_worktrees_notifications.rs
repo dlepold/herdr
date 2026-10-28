@@ -146,6 +146,7 @@ fn grouped_worktrees_render_parent_branch_and_indented_child() {
     state.set_snapshot(Box::new(replacement));
     state.set_pane_surface(replacement_surface);
     let collapsed = state.compose(106, 20).expect("collapsed worktree group");
+    assert!(frame_rows(&collapsed).join("\n").contains("spaces (2)"));
     let parent = state.hits.workspaces[0].rect;
     let status_cell = usize::from(parent.y) * usize::from(collapsed.width)
         + usize::from(parent.x.saturating_add(1));

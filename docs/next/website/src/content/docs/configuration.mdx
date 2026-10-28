@@ -365,6 +365,7 @@ The expanded desktop sidebar renders each inner array in `rows` as one line. The
 
 ```toml
 [ui.sidebar.agents]
+show_count = true
 row_gap = 0
 rows = [
   ["state_icon", "machine", "workspace", "tab"],
@@ -372,12 +373,15 @@ rows = [
 ]
 
 [ui.sidebar.spaces]
+show_count = true
 row_gap = 0
 rows = [
   ["state_icon", "workspace"],
   ["branch", "git_status"],
 ]
 ```
+
+Panel headings show live counts by default, for example `spaces (5)` and `agents (14)`. Set `show_count = false` in either section to hide that panel's count. Spaces include collapsed group members; agents count the entries in the current list, including the combined list across machines and any active agent-view filter. Counts update with session changes and do not depend on scrolling. Reload the client config to apply a changed setting.
 
 Agent rows accept these built-in tokens:
 

@@ -422,6 +422,8 @@ where
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(default)]
 pub struct AgentsSidebarConfig {
+    /// Show the number of listed agents in the panel heading. Default: true.
+    pub show_count: bool,
     #[serde(deserialize_with = "deserialize_sidebar_rows")]
     pub rows: AgentSidebarRows,
     #[serde(default, deserialize_with = "deserialize_rows_by_agent")]
@@ -440,6 +442,7 @@ impl AgentsSidebarConfig {
 impl Default for AgentsSidebarConfig {
     fn default() -> Self {
         Self {
+            show_count: true,
             rows: vec![
                 vec![
                     AgentSidebarToken::StateIcon,
@@ -458,6 +461,8 @@ impl Default for AgentsSidebarConfig {
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(default)]
 pub struct SpacesSidebarConfig {
+    /// Show the number of spaces, including collapsed group members. Default: true.
+    pub show_count: bool,
     #[serde(deserialize_with = "deserialize_sidebar_rows")]
     pub rows: SpaceSidebarRows,
     pub row_gap: u16,
@@ -466,6 +471,7 @@ pub struct SpacesSidebarConfig {
 impl Default for SpacesSidebarConfig {
     fn default() -> Self {
         Self {
+            show_count: true,
             rows: vec![
                 vec![SpaceSidebarToken::StateIcon, SpaceSidebarToken::Workspace],
                 vec![SpaceSidebarToken::Branch, SpaceSidebarToken::GitStatus],
@@ -489,6 +495,8 @@ mod tests {
     #[test]
     fn defaults_match_the_compact_agent_and_existing_space_layouts() {
         let config = SidebarConfig::default();
+        assert!(config.agents.show_count);
+        assert!(config.spaces.show_count);
         assert_eq!(
             config.agents.rows,
             vec![
@@ -511,6 +519,20 @@ mod tests {
             ]
         );
         assert_eq!(config.spaces.row_gap, 0);
+    }
+
+    #[test]
+    fn sidebar_counts_default_on_and_can_be_disabled_independently() {
+        let config: crate::config::Config = toml::from_str(
+            "[ui.sidebar.agents]\nshow_count = false\n[ui.sidebar.spaces]\nrow_gap = 1",
+        )
+        .unwrap();
+        assert!(!config.ui.sidebar.agents.show_count);
+        assert!(config.ui.sidebar.spaces.show_count);
+        let config: crate::config::Config =
+            toml::from_str("[ui.sidebar.spaces]\nshow_count = false").unwrap();
+        assert!(config.ui.sidebar.agents.show_count);
+        assert!(!config.ui.sidebar.spaces.show_count);
     }
 
     #[test]

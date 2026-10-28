@@ -350,6 +350,8 @@ const DEFAULT_CONFIG: &str = r##"# herdr configuration
 # A token occurrence may be styled with { token = "workspace", fg = "#89b4fa", bold = true, dim = false }.
 # Omitted style fields preserve the contextual default.
 # [ui.sidebar.agents]
+# Show the number of listed agents in the heading.
+# show_count = true
 # Blank rows between agent entries. Set to 1 to restore the previous spacing.
 # row_gap = 0
 # rows = [["state_icon", "machine", "workspace", "tab"], ["agent"]]
@@ -361,6 +363,8 @@ const DEFAULT_CONFIG: &str = r##"# herdr configuration
 # Custom values reported through workspace metadata use a $name token, for example $jj_status.
 # Inline token styles accept strict #RGB/#RRGGBB foregrounds plus bold and dim booleans.
 # [ui.sidebar.spaces]
+# Show the number of spaces in the heading, including collapsed group members.
+# show_count = true
 # Blank rows between space entries. Set to 1 to restore the previous spacing.
 # row_gap = 0
 # rows = [["state_icon", "workspace"], ["branch", "git_status"]]

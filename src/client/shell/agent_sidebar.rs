@@ -57,17 +57,22 @@ pub(super) fn render_agent_panel(
     agent_scroll: &mut usize,
     hits: &mut ShellHitMap,
 ) {
+    let rows = if area.height >= 2 {
+        agent_rows(snapshot, config, None)
+    } else {
+        Vec::new()
+    };
     if !render_agent_panel_header(
         buffer,
         area,
         snapshot.agent_view_label.as_deref(),
+        rows.len(),
         config,
         hits,
     ) {
         return;
     }
 
-    let rows = agent_rows(snapshot, config, None);
     render_agent_list(
         buffer,
         area,
@@ -91,6 +96,7 @@ pub(super) fn render_agent_panel_header(
     buffer: &mut Buffer,
     area: Rect,
     agent_view_label: Option<&str>,
+    agent_count: usize,
     config: &ClientShellConfig,
     hits: &mut ShellHitMap,
 ) -> bool {
@@ -108,21 +114,30 @@ pub(super) fn render_agent_panel_header(
     if area.height < 2 {
         return false;
     }
-    put_text(
-        buffer,
-        area.x,
-        area.y + 1,
-        area.width,
-        " agents",
-        Style::default()
-            .fg(config.palette.overlay0)
-            .add_modifier(Modifier::BOLD),
-    );
+    let heading = if config.agents.show_count {
+        format!(" agents ({agent_count})")
+    } else {
+        " agents".to_owned()
+    };
     let sort_label = agent_view_label.unwrap_or(match config.agent_panel_sort {
         crate::config::AgentPanelSortConfig::Spaces => "grouped",
         crate::config::AgentPanelSortConfig::Priority => "priority",
     });
-    let sort_width = display_width(sort_label).min(area.width as usize) as u16;
+    // Keep the count readable in narrow sidebars; truncate the sort/view label
+    // to the remaining columns and keep its mouse hit area aligned with it.
+    let heading_width = display_width(&heading).min(area.width as usize) as u16;
+    let sort_width =
+        display_width(sort_label).min(area.width.saturating_sub(heading_width + 1) as usize) as u16;
+    put_text(
+        buffer,
+        area.x,
+        area.y + 1,
+        heading_width,
+        &heading,
+        Style::default()
+            .fg(config.palette.overlay0)
+            .add_modifier(Modifier::BOLD),
+    );
     let sort_rect = Rect::new(
         area.right().saturating_sub(sort_width),
         area.y + 1,
